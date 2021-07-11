@@ -231,6 +231,108 @@ const mapDispatchToProps = (dispatch) => {
 
 ## **Back to useState()**
 - useState is how you can get access to states coming from our Redux store.
+## Note how every component has access to the same data.
+
+```
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+const Product = () => {
+    const products = useSelector((state) => state);
+    console.log(products);
+    return(
+        <div>
+            <h1>Product</h1>
+        </div>
+    );
+}
+export default Product;
+```
+
+```
+import React from 'react';
+import { useSelector } from 'react-redux';
+import Product from './Product';
+
+const ProductList = () => {
+    const products = useSelector((state) => state);
+    console.log(products);
+    return(
+        <div className="ui grid container">
+            <Product />
+        </div>
+    );
+}
+export default ProductList;
+```
+## **BEAUTY OF REDUX**
+<hr />
+
+## Accessing state (dot) && destructuring
+```
+const Product = () => {
+  + const products = useSelector((state) => state.allProducts.products);
+  + const {id, title} = products[0];
+  return (
+    <>
+      <div className="four wide column">
+        <div className="ui link cards">
+          <div className="card">
+            <div className="image"></div>
+            <div className="content">
+  +           <div className="header">{title}</div>
+            </div>
+          </div>
+        </div>
+        <h1>Product</h1>
+      </div>
+    </>
+  );
+};
+```
+
+<hr />
+
+## Let's add some APIs to it now. useEffect for functional components, componentDidMount (lifecycle methods) for class components
+
+## **RECALL, useEffect() is effectively componentDidMount, componentDidUpdate, and componentWillUnmount combined.**
+- By using this Hook, you tell React that your component needs to do something after render. React will remember the function you passed (we’ll refer to it as our “effect”), and call it later after performing the DOM updates.
+- By default, it runs both after the first render and after every update.
+
+# Very Important Snippet
+```
+import React, { useEffect } from "react";
+import axios from "axios";
++ import { useDispatch, useSelector } from "react-redux";
++ import {setProducts} from '../redux/actions/productActions';
+import Product from "./Product";
+
+const ProductList = () => {
+  const products = useSelector((state) => state);
+  + const dispatch = useDispatch();
+  const fetchProducts = async () => {
+    try {
+      const { data } = await axios.get("https://fakestoreapi.com/products");
+  +   dispatch(setProducts(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  + useEffect(() => {
+  + fetchProducts();
+  }, []);
+  console.log(products);
+  return (
+    <div className="ui grid container">
+      <Product />
+    </div>
+  );
+};
+export default ProductList;
+```
+> ### We have a useEffect() hook that will run after the first render, this will call fetchProducts() an asynchronous function that makes an api call to fakestoreapi. In this fetchProducts function, we will dispatch an action (need to import useDispatch first). We have an action creator (we created it early) that expects a list of products (we will get after axios.get()). 
+>> ### We can go ahead and import the action creator then. then we can call dispatch(action_creator(expected data));
+>> ### The store handles our dispatch and sends it to the reducer, on a given action.type we will create a new state and return it to the store.
 
 
 
