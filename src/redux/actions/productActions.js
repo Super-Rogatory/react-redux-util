@@ -9,3 +9,7 @@ export const selectedProduct = (product) => ({
   type: types.SELECTED_PRODUCT,
   payload: product,
 });
+
+export const removeSelectedProduct = () => ({
+  type: types.REMOVE_SELECTED_PRODUCT,
+});

@@ -334,7 +334,95 @@ export default ProductList;
 >> ### We can go ahead and import the action creator then. then we can call dispatch(action_creator(expected data));
 >> ### The store handles our dispatch and sends it to the reducer, on a given action.type we will create a new state and return it to the store.
 
+## Product Component
+```
+import React from "react";
++ import { useSelector } from "react-redux";
++ import { Link } from "react-router-dom";
+const Product = () => {
+  const products = useSelector((state) => state.allProducts.products);
++ const renderList = products.map((product) => (
+    <div className="four wide column" key={product.id}>
++    <Link to={`/product/${product.id}`}>
+        <div className="ui link cards">
+          <div className="card">
+            <div className="image">
+              <img src={product.image} alt={product.title} />
+            </div>
+            <div className="content">
+              <div className="header">{product.title}</div>
+              <div className="meta price">{product.price}</div>
+              <div className="meta">{product.category}</div>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </div>
+  ));
 
+  return <>{renderList}</>;
+};
+export default Product;
+```
+- Notice our Link Component. This allows us to Link to one of the urls we specified in the Router component in App.js.
+
+## ProductDetail
+```
+import React, {useEffect} from 'react';
++ import { useParams } from 'react-router-dom';
+import axios from 'axios';
+
+const ProductDetail = () => {
+    + const {productId} = useParams();
+    console.log(productId);
+    return(
+        <div>
+            <h1>ProductDetail</h1>
+        </div>
+    );
+}
+export default ProductDetail;
+```
+- useParams() is the equivalent of req.params.id
+
+# Important Snippet of ProductDetail
+```
+import axios from "axios";
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectedProduct } from "../redux/actions/productActions";
+
+const ProductDetail = () => {
+  const producer = useSelector((state) => state.product);
+  const { productId } = useParams();
+  const dispatch = useDispatch();
+  const fetchProductDetail = async () => {
+    try {
+      const { data } = await axios.get(`https://fakestoreapi.com/${productId}`);
+      dispatch(selectedProduct(data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <div>
+      <h1>ProductDetail</h1>
+    </div>
+  );
+};
+export default ProductDetail;
+```
+- We need useDispatch in order to dispatch our action.
+- We need useSelector to get some value from our store. **state.product comes from the key value of our combined reducer, check below**
+- We need useParams to get the id that the user is trying to access.
+
+```
+export const reducers = combineReducers({
+    allProducts: productReducer,
+    product: selectedProductReducer
+})
+```
 
 
 
