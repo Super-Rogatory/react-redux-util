@@ -51,7 +51,8 @@ const reducers = combineReducers({
 
 - Recall that combineReducers will **take in an object whose values are different reducing functions** and **returns a single reducing function.**
 - This single reducing funnction can then be passed into createStore.
-- **NOTE. The resulting reducer calls every child reducer and gathers their results into a single state object. Whatever the initialState is, that is what will be collected into the single state object.**
+- **NOTE. The resulting reducer calls every child reducer and gathers their results into a single state object. Whatever the initialState is for each reducer, that is what will be collected into the single state object.**
+- ## **NOTE. Since we combinedReducers, all reducers are invoked when an action is dispatched.**
 <hr />
 
 ## Creating the store. (store.js)
