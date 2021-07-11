@@ -54,7 +54,7 @@ const reducers = combineReducers({
 - **NOTE. The resulting reducer calls every child reducer and gathers their results into a single state object. Whatever the initialState is, that is what will be collected into the single state object.**
 <hr />
 
-## Creating the store.
+## Creating the store. (store.js)
 
 ```
 import { createStore } from "redux";
@@ -81,7 +81,7 @@ export default store;
 
 <hr />
 
-## Linking React Application with Redux
+## Linking React Application with Redux (index.js in Home)
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -119,3 +119,120 @@ export const reducers = combineReducers({
 <hr />
 
 ## Creating React Components
+- We created a Header, ProductList, ProductDetail, and Product component. You are mostly familiar with React so we can just provide example code.
+```
+import './App.css';
+import Header from './components/Header';
+function App() {
+  return (
+    <div className="App">
+      <Header />
+    </div>
+  );
+}
+
+export default App;
+```
+
+```
+import React from 'react';
+const Header = () => {
+    return (
+        <div className="ui fixed menu">
+            <div className="ui container center">
+                <h2>Shopper.io</h2>
+            </div>
+        </div>
+    );
+}
+export default Header;
+```
+<hr />
+
+## Add Routing to Project
+```
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <Header />
+        <Switch>
+          <Route path="/" exact component={ProductList} />
+          <Route path="/product/:productId" exact component={ProductDetail} />
+          <Route>404 Not Found</Route>
+        </Switch>
+      </Router>
+    </div>
+  );
+}
+```
+* Once we have imported HashRouter, Route, and Switch. We can then setup some logic.
+* <Switch> | Renders the first child <Route> or <Redirect> that matches the location.
+
+<hr />
+
+## Accessing State (functional components) (ProductList.js,)
+```
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+const ProductList = () => {
+    const products = useSelector((state) => state);
+    console.log(products);
+    return(
+        <div className="ui grid container">
+            <h1>Product List</h1>
+        </div>
+    );
+}
+```
+- ## **useSelector() hook in Functional Components, connect() in class components.**
+- As with connect(), you should start by wrapping the entire application in a <Provider> component to make the store available to entire component tree.
+- ### useSelector() allows you to extract data from the Redux store state. This hook takes in one mandatory and one optional argument.
+```
+const result = useSelector(selector: Function, equalityFn?: Function)
+```
+- ### The selector is approximately equivalent to the mapStateToProps argument to connect conceptually.
+<hr />
+
+- ### Recall, connect() is a function that connects a React component to a Redux store.
+```
+function connect(mapStateToProps?, mapDispatchToProps?, mergeProps?, options?)
+```
+## mapStateToProps
+- ## **The mapStateToProps and mapDispatchToProps deals with your Redux store's state and dispatch.** 
+- ### If a mapStateToProps function is specified, the wrapper component will subscribe to Redux store updates, it will get called everytime the state changes.
+- ## **A mapStateToProps function takes a maximum of two parameters, state (obj) and 'ownProps' (obj, optional).**
+- ### If your mapStateToProps function is declared as taking one parameter, it will be called whenever the store state changes, and given the store state as the only parameter.
+
+> `const mapStateToProps = (state) => ({ todos: state.todos })`
+- ### If your mapStateToProps function is declared as taking two parameters, it will be called whenever the store state changes or when the wrapper component receives new props (based on shallow equality comparisons). It will be given the store state as the first parameter, and the wrapper component's props as the second parameter.
+
+## **NOTE: Your mapStateToProps function is expected to return an object, this object is merged as props to your connected component**
+<hr />
+
+## mapDispatchToProps
+- ## If your mapDispatchToProps is declared as a function taking one parameter, it will be given the dispatch of your store, meaning it can dispatch actions that will change the state of the component.
+```
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // dispatching plain actions
+    increment: () => dispatch({ type: 'INCREMENT' }),
+    decrement: () => dispatch({ type: 'DECREMENT' }),
+    reset: () => dispatch({ type: 'RESET' }),
+  }
+}
+```
+
+## **NOTE: Your maptDispatchToProps function is expected to return an object, each property of the object should be a function that dispatchs an action to the store when called**
+
+## **NOTE: The return of connect() is a wrapper function that takes your component and returns a wrapper component with the additional props it injects.**
+<hr />
+
+## **Back to useState()**
+- useState is how you can get access to states coming from our Redux store.
+
+
+
+
+
